@@ -7,7 +7,7 @@ Calculate phi
 Show difference
 Save the data to csv and plot in python
 */
-double straightforward(double phi, int n)
+double straightforward_double(double phi, int n)
 {
     double result = pow(phi, n); 
     return result;
@@ -17,7 +17,7 @@ double straightforward(double phi, int n)
 Formula:
 phi^n = phi^(n-1) + phi^(n-2)
 */
-double iterative(double phi, int n)
+double iterative_double(double phi, int n)
 {
     double phi_n_minus_2 = 1.0;
     double phi_n_minus_1 = phi;
@@ -33,16 +33,46 @@ double iterative(double phi, int n)
     return result;
 }
 
+float straightforward_float(float phi, int n)
+{
+    float result = pow(phi, n);
+
+    return result;
+}
+
+float iterative_float(float phi, int n)
+{
+    float phi_n_minus_2 = 1.0;
+    float phi_n_minus_1 = phi;
+    float result = 0.0;
+
+    for (int i = 2; i <= n; i++)
+    {
+        result = phi_n_minus_1 + phi_n_minus_2;
+        phi_n_minus_2 = phi_n_minus_1;
+        phi_n_minus_1 = result;
+    }
+
+    return result;
+}
+
+int is_python_installed()
+{
+    int result = system("python3 --version");
+    return (result == 0);
+}
+
 int main()
 {
-    double phi = (1 + sqrt(5)) / 2; 
+    double phi_double = (1 + sqrt(5)) / 2; 
+    float phi_float = (1 + sqrtf(5)) / 2;
     int nth_term;
 
-    printf("Enter the value of n: ");
+    printf("Enter the value of n (224 for best visability for ploting): ");
     scanf("%d", &nth_term);
 
     char filename[50];
-    sprintf(filename, "calculating_%dth_phi.csv", nth_term);
+    snprintf(filename, sizeof(filename), "calculating_%dth_phi.csv", nth_term);
 
     FILE *file_pointer;
     file_pointer = fopen(filename, "w+");
@@ -53,29 +83,60 @@ int main()
         return 1;
     }
 
-    fprintf(file_pointer, "n,Straightforward,Iterative,Delta\n");
+    fprintf(file_pointer, "n,Straightforward_double,Iterative_double,Delta_double,Straightforward_float,Iterative_float,Delta_float\n");
 
     for (int i = 2; i <= nth_term; i++)
     {
-        double straightforward_phi = straightforward(phi, i);
-        double iterative_phi = iterative(phi, i);
+        // Double
+        double straightforward_phi_double = straightforward_double(phi_double, i);
+        double iterative_phi_double = iterative_double(phi_double, i);
 
-        double delta_phi = straightforward_phi - iterative_phi;
+        double delta_phi_double = fabs(straightforward_phi_double - iterative_phi_double);
+
+        // Float
+        float straightforward_phi_float = straightforward_float(phi_float, i);
+        float iterative_phi_float = iterative_float(phi_float, i);
+
+        float delta_phi_float = fabsf(straightforward_phi_float - iterative_phi_float);
+
+        // Percent Diff
+        
 
         printf("\n%ith power\n", i);
-        printf("Straightforward: %f\n", straightforward_phi);        
-        printf("Iterative: %f\n", iterative_phi);       
-        printf("Delta phi: %f\n", delta_phi);
+        printf("Straightforward_double: %lf\n", straightforward_phi_double);
+        printf("Straightforward_float: %f\n", straightforward_phi_float);
+        printf("Iterative_double: %lf\n", iterative_phi_double);
+        printf("Iterative_float: %f\n", iterative_phi_float);
+        printf("Delta phi_double: %lf\n", delta_phi_double);
+        printf("Delta phi_float: %f\n", delta_phi_float);
 
-        fprintf(file_pointer, "%d,%f,%f,%f\n", i, straightforward_phi, iterative_phi, delta_phi);
+        fprintf(
+            file_pointer, 
+            "%d,%lf,%lf,%lf,%f,%f,%f\n", 
+            i, 
+            straightforward_phi_double, 
+            iterative_phi_double, 
+            delta_phi_double, 
+            straightforward_phi_float, 
+            iterative_phi_float, 
+            delta_phi_float);
+
     }
 
     fclose(file_pointer);
     printf("Data saved to %s\n", filename);
 
-    char command[100];
-    sprintf(command, "python3 ./readPhi.py %d", nth_term);
-    system(command);
+    if (is_python_installed())
+    {
+        char command[100];
+        snprintf(command, sizeof(command), "python3 ./readPhi.py %d", nth_term);
+        system(command);
+    }
+    else
+    {
+        printf("Python is not installed. Skipping Python script execution.\n");
+        printf("You can manually run the Python script 'readPhi.py' with the generated CSV file.\n");
+    }
 
     return 0;
 }
