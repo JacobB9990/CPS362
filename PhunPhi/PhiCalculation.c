@@ -3,20 +3,21 @@
 #include <stdlib.h>
 
 /*
-Calculate phi
+Calculate φ
 Show difference
 Save the data to csv and plot in python
+
+Formula:
+φ^n = φ^(n-1) + φ^(n-2)
 */
+
+// double bellow
 double straightforward_double(double phi, int n)
 {
-    double result = pow(phi, n); 
+    double result = pow(phi, n);
     return result;
 }
 
-/*
-Formula:
-phi^n = phi^(n-1) + phi^(n-2)
-*/
 double iterative_double(double phi, int n)
 {
     double phi_n_minus_2 = 1.0;
@@ -33,6 +34,7 @@ double iterative_double(double phi, int n)
     return result;
 }
 
+// Float bellow
 float straightforward_float(float phi, int n)
 {
     float result = pow(phi, n);
@@ -56,19 +58,44 @@ float iterative_float(float phi, int n)
     return result;
 }
 
+// Check if Python is installed
 int is_python_installed()
 {
-    int result = system("python3 --version");
-    return (result == 0);
+    int result_python3 = system("python3 --version");
+    if (result_python3 == 0)
+    {
+        return 1;
+    }
+
+    int result_python = system("python --version");
+    return (result_python == 0);
+}
+
+// Get the correct Python command
+const char *get_python_command()
+{
+    int result_python3 = system("python3 --version");
+    if (result_python3 == 0)
+    {
+        return "python3";
+    }
+
+    int result_python = system("python --version");
+    if (result_python == 0)
+    {
+        return "python";
+    }
+
+    return NULL;
 }
 
 int main()
 {
-    double phi_double = (1 + sqrt(5)) / 2; 
+    double phi_double = (1 + sqrt(5)) / 2;
     float phi_float = (1 + sqrtf(5)) / 2;
     int nth_term;
 
-    printf("Enter the value of n (224 for best visability for ploting): ");
+    printf("Enter the value of n (224 for best visibility for plotting): ");
     scanf("%d", &nth_term);
 
     char filename[50];
@@ -99,9 +126,7 @@ int main()
 
         float delta_phi_float = fabsf(straightforward_phi_float - iterative_phi_float);
 
-        // Percent Diff
-        
-
+        // Output
         printf("\n%ith power\n", i);
         printf("Straightforward_double: %lf\n", straightforward_phi_double);
         printf("Straightforward_float: %f\n", straightforward_phi_float);
@@ -110,26 +135,28 @@ int main()
         printf("Delta phi_double: %lf\n", delta_phi_double);
         printf("Delta phi_float: %f\n", delta_phi_float);
 
+        // Saving to csv
         fprintf(
-            file_pointer, 
-            "%d,%lf,%lf,%lf,%f,%f,%f\n", 
-            i, 
-            straightforward_phi_double, 
-            iterative_phi_double, 
-            delta_phi_double, 
-            straightforward_phi_float, 
-            iterative_phi_float, 
+            file_pointer,
+            "%d,%lf,%lf,%lf,%f,%f,%f\n",
+            i,
+            straightforward_phi_double,
+            iterative_phi_double,
+            delta_phi_double,
+            straightforward_phi_float,
+            iterative_phi_float,
             delta_phi_float);
-
     }
 
     fclose(file_pointer);
     printf("Data saved to %s\n", filename);
 
-    if (is_python_installed())
+    // Check if Python is installed and get the correct command
+    const char *python_command = get_python_command();
+    if (python_command != NULL)
     {
         char command[100];
-        snprintf(command, sizeof(command), "python3 ./readPhi.py %d", nth_term);
+        snprintf(command, sizeof(command), "%s ./readPhi.py %d", python_command, nth_term);
         system(command);
     }
     else
