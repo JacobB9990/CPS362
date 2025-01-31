@@ -7,9 +7,9 @@ Calculate phi
 Show difference
 Save the data to csv and plot in python
 */
-long double straightforward(long double phi, int n)
+double straightforward(double phi, int n)
 {
-    long double result = powl(phi, n); 
+    double result = pow(phi, n); 
     return result;
 }
 
@@ -17,11 +17,11 @@ long double straightforward(long double phi, int n)
 Formula:
 phi^n = phi^(n-1) + phi^(n-2)
 */
-long double iterative(long double phi, int n)
+double iterative(double phi, int n)
 {
-    long double phi_n_minus_2 = 1.0;
-    long double phi_n_minus_1 = phi;
-    long double result = 0.0;
+    double phi_n_minus_2 = 1.0;
+    double phi_n_minus_1 = phi;
+    double result = 0.0;
 
     for (int i = 2; i <= n; i++)
     {
@@ -35,7 +35,7 @@ long double iterative(long double phi, int n)
 
 int main()
 {
-    long double phi = (1 + sqrtl(5)) / 2; 
+    double phi = (1 + sqrt(5)) / 2; 
     int nth_term;
 
     printf("Enter the value of n: ");
@@ -57,17 +57,17 @@ int main()
 
     for (int i = 2; i <= nth_term; i++)
     {
-        long double straightforward_phi = straightforward(phi, i);
-        long double iterative_phi = iterative(phi, i);
+        double straightforward_phi = straightforward(phi, i);
+        double iterative_phi = iterative(phi, i);
 
-        long double delta_phi = straightforward_phi - iterative_phi;
+        double delta_phi = straightforward_phi - iterative_phi;
 
         printf("\n%ith power\n", i);
-        printf("Straightforward: %Lf\n", straightforward_phi);        
-        printf("Iterative: %Lf\n", iterative_phi);       
-        printf("Delta phi: %Lf\n", delta_phi);
+        printf("Straightforward: %f\n", straightforward_phi);        
+        printf("Iterative: %f\n", iterative_phi);       
+        printf("Delta phi: %f\n", delta_phi);
 
-        fprintf(file_pointer, "%d,%Lf,%Lf,%Lf\n", i, straightforward_phi, iterative_phi, delta_phi);
+        fprintf(file_pointer, "%d,%f,%f,%f\n", i, straightforward_phi, iterative_phi, delta_phi);
     }
 
     fclose(file_pointer);
@@ -79,6 +79,7 @@ int main()
 
     return 0;
 }
+
 /*
 gcc PhiCalculation.c -o PhiCalculation -lm
 ./PhiCalculation
