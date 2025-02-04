@@ -10,6 +10,9 @@ except ModuleNotFoundError as e:
     print("pip(3) install pandas matplotlib")
     sys.exit(1)
 
+def exponential_reg(a, b):
+    pass
+
 def main(n):
     try:
         filename = f"calculating_{n}th_phi.csv"
@@ -20,10 +23,11 @@ def main(n):
 
         plt.figure(figsize=(10, 6))
 
+        # Delta between each respective type i.e. straightforward_double - iterative_double = delta_double
         plt.plot(
             data["n"],
             data["Delta_double"],
-            label="Delta (double))",
+            label="Delta (double)",
         )
         plt.plot(
             data["n"],
@@ -31,16 +35,29 @@ def main(n):
             label="Delta (float)",
         )
 
-        # plt.plot(
-        #     data["n"],
-        #     data["Straightforward_float"],
-        #     label="straight float",
-        # )
-        # plt.plot(
-        #     data["n"],
-        #     data["Iterative_float"],
-        #     label="iterative",
-        # )
+        # Actual values of φ^n (float)
+        plt.plot(
+            data["n"],
+            data["Straightforward_float"],
+            label="straight float",
+        )
+        plt.plot(
+            data["n"],
+            data["Iterative_float"],
+            label="iterative",
+        )
+
+        # Actual values of φ^n (double)
+        plt.plot(
+            data["n"],
+            data["Straightforward_double"],
+            label="straight double",
+        )
+        plt.plot(
+            data["n"],
+            data["Iterative_double"],
+            label="iterative double",
+        )
 
         plt.xlabel("n")
         plt.ylabel("Value")

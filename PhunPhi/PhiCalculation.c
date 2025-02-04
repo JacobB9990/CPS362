@@ -95,7 +95,8 @@ int main()
     float phi_float = (1 + sqrtf(5)) / 2;
     int nth_term;
 
-    printf("Enter the value of n (224 for best visibility for plotting): ");
+    // Some good n values are 225 and 1475
+    printf("Enter the value of n : ");
     scanf("%d", &nth_term);
 
     char filename[50];
